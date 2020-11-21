@@ -11,11 +11,29 @@ class CreditCard:
         self.card = ""
         self.pin = self.DEFAULT
         self.word = ""
+        self.n_list = []
+        self.checksum = ""
 
     def generate_card(self):
-        self.word = str(randint(0000000000, 9999999999))
-        self.word = "0" * (10 - len(self.word)) + self.word
-        self.card = str(self.IIN) + self.word
+        self.word = str(randint(000000000, 999999999))
+        self.word = str(self.IIN) + "0" * (9 - len(self.word)) + self.word
+
+        self.n_list = [int(x) for x in self.word]
+
+        for _, n in enumerate(self.n_list):
+            if self.n_list.index(n, _) % 2 == 0:
+                self.n_list[self.n_list.index(n, _)] = n * 2
+        for _, n in enumerate(self.n_list):
+            if n > 9:
+                self.n_list[self.n_list.index(n, _)] = n - 9
+        # self.checksum = str(10 - sum(self.n_list) % 10)
+
+        if sum(self.n_list) % 10 == 0:
+            self.checksum = "0"
+        else:
+            self.checksum = str(10 - sum(self.n_list) % 10)
+
+        self.card = self.word + self.checksum
         self.pin = str(randint(0000, 9999))
         self.pin = "0" * (4 - len(self.pin)) + self.pin
         print("Your card has been created")
