@@ -1,6 +1,7 @@
 # Write your code here
 
 from random import randint
+from db import __init_db, create_connection, create_card
 
 
 class CreditCard:
@@ -45,8 +46,19 @@ class CreditCard:
         print("Your card PIN:")
         print(self.pin)
 
+    def add_card_to_db(self):
+        database = r"card.s3db"
+        conn = create_connection(database)
+        with conn:
+            # create a new card
+            card = (1, self.card, self.pin, 0)
+            create_card(conn, card)
+
 
 if __name__ == "__main__":
+    # initialize db
+    __init_db()
+
     cred_dict = {}
     loop = True
     while loop:
@@ -65,6 +77,8 @@ if __name__ == "__main__":
             cardID, pinID = my_card.generate_card()
             cred_dict[cardID] = pinID
             my_card.show_credentials()
+            # add card to db
+            my_card.add_card_to_db()
 
         if option == "2":
             print("Enter your card number:")
