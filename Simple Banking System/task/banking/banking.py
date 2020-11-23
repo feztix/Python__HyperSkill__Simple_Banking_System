@@ -1,14 +1,15 @@
-# Write your code here
-
 from random import randint
-from db import __init_db, create_connection, create_card
+from db import __init_db, create_connection, create_card, show_card_balance
 
 
 class CreditCard:
     DEFAULT = 0000
     IIN = 400000
+    DATABASE = r"card.s3db"
+    ID = 0
 
     def __init__(self):
+        self.id = self.ID
         self.card = ""
         self.pin = self.DEFAULT
         self.word = ""
@@ -27,7 +28,6 @@ class CreditCard:
         for _, n in enumerate(self.n_list):
             if n > 9:
                 self.n_list[self.n_list.index(n, _)] = n - 9
-        # self.checksum = str(10 - sum(self.n_list) % 10)
 
         if sum(self.n_list) % 10 == 0:
             self.checksum = "0"
@@ -37,6 +37,7 @@ class CreditCard:
         self.card = self.word + self.checksum
         self.pin = str(randint(0000, 9999))
         self.pin = "0" * (4 - len(self.pin)) + self.pin
+        CreditCard.ID += 1
         print("Your card has been created")
         return self.card, self.pin
 
@@ -45,13 +46,14 @@ class CreditCard:
         print(self.card)
         print("Your card PIN:")
         print(self.pin)
+        # print("Your card ID:")
+        # print(self.id)
 
     def add_card_to_db(self):
-        database = r"card.s3db"
-        conn = create_connection(database)
+        conn = create_connection(self.DATABASE)
         with conn:
             # create a new card
-            card = (1, self.card, self.pin, 0)
+            card = (self.ID, self.card, self.pin, 20)
             create_card(conn, card)
 
 
@@ -60,6 +62,7 @@ if __name__ == "__main__":
     __init_db()
 
     cred_dict = {}
+    account_card = None
     loop = True
     while loop:
         print("1. Create an account")
@@ -92,13 +95,24 @@ if __name__ == "__main__":
                     new_loop = True
                     while new_loop:
                         print("1. Balance")
-                        print("2. Log Out")
+                        print("2. Add income")
+                        print("4. Do transfer")
+                        print("5. Close account")
+                        print("6. Log out")
                         print("0. Exit")
 
                         new_option = input()
                         if new_option == "1":
-                            print("Balance: 0")
+                            show_card_balance(card_number)
                         if new_option == "2":
+                            print("Balance: 0")
+                        if new_option == "3":
+                            print("Balance: 0")
+                        if new_option == "4":
+                            print("Balance: 0")
+                        if new_option == "5":
+                            print("Balance: 0")
+                        if new_option == "6":
                             print("You have successfully logged out!")
                             new_loop = False
                         if new_option == "0":

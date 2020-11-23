@@ -1,6 +1,20 @@
 import sqlite3
 from sqlite3 import Error
 
+database = r"card.s3db"
+
+
+def show_card_balance(number):
+    conn = create_connection(database)
+    with conn:
+        cur = conn.cursor()
+        cur.execute("SELECT balance FROM card WHERE number=?", (number,))
+
+        rows = cur.fetchall()
+
+        for row in rows:
+            print(*row)
+
 
 def create_connection(path):
     """ create a database connection to a SQLite database """
@@ -29,7 +43,7 @@ def create_table(conn, create_table_sql):
 
 def create_card(conn, card):
     """
-    Create a new project into the projects table
+    Create a new card into the card table
     :param conn:
     :param card:
     :return: project id
@@ -43,8 +57,6 @@ def create_card(conn, card):
 
 
 def __init_db():
-    database = r"card.s3db"
-
     sql_create_cards_table = """ CREATE TABLE IF NOT EXISTS card (
                                             id INTEGER,
                                             number TEXT,
