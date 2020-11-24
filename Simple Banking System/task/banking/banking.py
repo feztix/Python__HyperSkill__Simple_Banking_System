@@ -1,5 +1,5 @@
 from random import randint
-from db import __init_db, create_connection, create_card, show_card_balance
+from db import __init_db, create_connection, create_card, show_card_balance, log_into_account, add_income, do_transfer, close_account
 
 
 class CreditCard:
@@ -46,14 +46,12 @@ class CreditCard:
         print(self.card)
         print("Your card PIN:")
         print(self.pin)
-        # print("Your card ID:")
-        # print(self.id)
 
     def add_card_to_db(self):
         conn = create_connection(self.DATABASE)
         with conn:
             # create a new card
-            card = (self.ID, self.card, self.pin, 20)
+            card = (self.ID, self.card, self.pin, 0)
             create_card(conn, card)
 
 
@@ -89,37 +87,36 @@ if __name__ == "__main__":
             print("Enter your PIN:")
             pin_number = input()
 
-            if card_number in cred_dict.keys():
-                if cred_dict[card_number] == pin_number:
-                    print("You have successfully logged in!")
-                    new_loop = True
-                    while new_loop:
-                        print("1. Balance")
-                        print("2. Add income")
-                        print("4. Do transfer")
-                        print("5. Close account")
-                        print("6. Log out")
-                        print("0. Exit")
+            authorization = log_into_account(card_number, pin_number)
 
-                        new_option = input()
-                        if new_option == "1":
-                            show_card_balance(card_number)
-                        if new_option == "2":
-                            print("Balance: 0")
-                        if new_option == "3":
-                            print("Balance: 0")
-                        if new_option == "4":
-                            print("Balance: 0")
-                        if new_option == "5":
-                            print("Balance: 0")
-                        if new_option == "6":
-                            print("You have successfully logged out!")
-                            new_loop = False
-                        if new_option == "0":
-                            new_loop = False
-                            loop = False
-                            print("Bye!")
-                else:
-                    print("Wrong card number or PIN!")
+            if authorization:
+                print("You have successfully logged in!")
+                new_loop = True
+                while new_loop:
+                    print("1. Balance")
+                    print("2. Add income")
+                    print("3. Do transfer")
+                    print("4. Close account")
+                    print("5. Log out")
+                    print("0. Exit")
+
+                    new_option = input()
+                    if new_option == "1":
+                        show_card_balance(card_number, 0)
+                    if new_option == "2":
+                        income = int(input("Add some money: "))
+                        add_income((income, card_number))
+                    if new_option == "3":
+                        card_to_transfer = int(input("Input card number to transfer: "))
+                        do_transfer(card_number, card_to_transfer)
+                    if new_option == "4":
+                        close_account(card_number)
+                    if new_option == "5":
+                        print("You have successfully logged out!")
+                        new_loop = False
+                    if new_option == "0":
+                        new_loop = False
+                        loop = False
+                        print("Bye!")
             else:
                 print("Wrong card number or PIN!")
