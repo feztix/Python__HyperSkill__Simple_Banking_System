@@ -1,5 +1,5 @@
 from random import randint
-from db import __init_db, create_connection, create_card, show_card_balance, log_into_account, add_income, do_transfer, close_account
+import db
 
 
 class CreditCard:
@@ -16,6 +16,7 @@ class CreditCard:
         self.n_list = []
         self.checksum = ""
 
+    # generate card number via Luhn's Algorithm
     def generate_card(self):
         self.word = str(randint(000000000, 999999999))
         self.word = str(self.IIN) + "0" * (9 - len(self.word)) + self.word
@@ -48,19 +49,18 @@ class CreditCard:
         print(self.pin)
 
     def add_card_to_db(self):
-        conn = create_connection(self.DATABASE)
+        conn = db.create_connection(self.DATABASE)
         with conn:
             # create a new card
             card = (self.ID, self.card, self.pin, 0)
-            create_card(conn, card)
+            db.create_card(conn, card)
 
 
 if __name__ == "__main__":
     # initialize db
-    __init_db()
+    db.__init_db()
 
     cred_dict = {}
-    account_card = None
     loop = True
     while loop:
         print("1. Create an account")
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             print("Enter your PIN:")
             pin_number = input()
 
-            authorization = log_into_account(card_number, pin_number)
+            authorization = db.log_into_account(card_number, pin_number)
 
             if authorization:
                 print("You have successfully logged in!")
@@ -102,15 +102,15 @@ if __name__ == "__main__":
 
                     new_option = input()
                     if new_option == "1":
-                        show_card_balance(card_number, 0)
+                        db.show_card_balance(card_number, 0)
                     if new_option == "2":
                         income = int(input("Add some money: "))
-                        add_income((income, card_number))
+                        db.add_income((income, card_number))
                     if new_option == "3":
                         card_to_transfer = int(input("Input card number to transfer: "))
-                        do_transfer(card_number, card_to_transfer)
+                        db.do_transfer(card_number, card_to_transfer)
                     if new_option == "4":
-                        close_account(card_number)
+                        db.close_account(card_number)
                     if new_option == "5":
                         print("You have successfully logged out!")
                         new_loop = False
