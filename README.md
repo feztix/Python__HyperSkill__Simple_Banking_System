@@ -104,7 +104,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Your Name - [@feztix](https://t.me/feztix) - sergeyrust@gmail.com
 
 
 
@@ -121,5 +121,5 @@ Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.c
 * [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
 * [Sticky Kit](http://leafo.net/sticky-kit)
 * [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
+* [Font Awesome](https://fontawesome.com) ` 
 
